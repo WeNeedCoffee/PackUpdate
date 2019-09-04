@@ -1,209 +1,354 @@
 package at.chaosfield.packupdate;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import org.json.JSONException;
+import org.json.JSONObject;
+import coffee.weneed.utils.NetUtil;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.stage.Stage;
 
-import java.io.File;
-import java.io.IOException;
-import java.lang.Override;
-import java.lang.String;
-import java.util.*;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 /**
  * Created by Jakob (XDjackieXD) Riepler
  */
 public class FxController {
 
-    @FXML
-    private Label status;
+	@FXML
+	private Label status;
 
-    @FXML
-    private ProgressBar progress;
+	@FXML
+	private ProgressBar progress;
 
-    private List<String> parameters;
+	//private List<String> parameters;
 
-    private Stage primaryStage;
+	private Stage primaryStage;
 
-    public void setMain(PackUpdate main) {
-        this.primaryStage = main.primaryStage;
-        this.parameters = main.getParameters().getRaw();
+	public void setMain(PackUpdate main) {
+		
+		this.primaryStage = main.primaryStage;
+		//this.parameters = main.getParameters().getRaw();
+		String remote_root = "https://raw.githubusercontent.com/WeNeedCoffee/Convergence/Resurgence/";
+		String local_root = main.getParameters().getRaw().get(2);
+		boolean server = main.getParameters().getRaw().get(4).equalsIgnoreCase("server") ? true : false;
 
-        Task updater = new Task<List<String>>() {
-            @Override
-            protected List<String> call() {
+		Task<List<String>> updater = new Task<List<String>>() {
+			@Override
+			protected List<String> call() {
 
-                class ErrorLog extends ArrayList<String> {
-                    @Override
-                    public boolean add(String e) {
-                        System.out.println(e);
-                        return super.add(e);
-                    }
-                }
+				class ErrorLog extends ArrayList<String> {
+					/**
+					 * 
+					 */
+					private static final long serialVersionUID = 1L;
 
-                List<String> ret = new ErrorLog();
-                HashMap<String, String[]> updated = new HashMap<>();
-                HashMap<String, String[]> updateables = null;
+					@Override
+					public boolean add(String e) {
+						System.out.println(e);
+						return super.add(e);
+					}
+				}
 
-                try {
-                    updateables = FileManager.getAvailableUpdates(parameters.get(0), parameters.get(2) + File.separator + parameters.get(1));
-                    updateMessage("To Update: " + updateables.size());
-                } catch (IOException e) {
-                    ret.add("[PackUpdate] Downloading \"" + parameters.get(0) + "\" failed.");
-                    e.printStackTrace();
-                }
+				List<String> ret = new ErrorLog();
+				HashMap<String, String[]> mods = new HashMap<>();
+				HashMap<String, String[]> new_mods = null;
+				
+				HashMap<String, String[]> curse = new HashMap<>();
+				HashMap<String, String[]> new_curse = null;
+				
+				HashMap<String, String[]> files = new HashMap<>();
+				HashMap<String, String[]> new_files = null;
 
-                if (updateables != null) {
-                    int current = 0;
-                    updateProgress(current, updateables.size());
+				int current = 0;
+				int toupdate = 0;
+				
+				
 
-                    final String modsPath = parameters.get(2) + File.separator + "mods" + File.separator;
-                    final String configPath = parameters.get(2) + File.separator + "config";
-                    final String resourcePacksPath = parameters.get(2) + File.separator + "resources" + File.separator;
-                    final String resourcesPath = parameters.get(2);
+				try {
+					new_mods = FileManager.getAvailableUpdates(remote_root + "mods.csv", local_root + File.separator + "mods.csv");
+					updateMessage("To Update: " + new_mods.size());
+					toupdate += new_mods.size();
+				} catch (IOException e) {
+					ret.add("[PackUpdate] Downloading \"" + remote_root + "mods.csv" + "\" failed.");
+					e.printStackTrace();
+				}
+				
+				try {
+					new_curse = FileManager.getAvailableUpdates(remote_root + "curse.csv", local_root + File.separator + "curse.csv");
+					updateMessage("To Update: " + new_curse.size());
+					toupdate += new_curse.size();
+				} catch (IOException e) {
+					ret.add("[PackUpdate] Downloading \"" + remote_root + "curse.csv" + "\" failed.");
+					e.printStackTrace();
+				}
+				
 
-                    for (Map.Entry<String, String[]> entry : updateables.entrySet()) {
-                        updateMessage("Updating " + entry.getKey());
+				try {
+					new_files = FileManager.getAvailableUpdates(remote_root + "files.csv", local_root + File.separator + "files.csv");
+					updateMessage("To Update: " + new_files.size());
+					toupdate += new_files.size();
+				} catch (IOException e) {
+					ret.add("[PackUpdate] Downloading \"" + remote_root + "files.csv" + "\" failed.");
+					e.printStackTrace();
+				}
+				
 
-                        switch (entry.getValue()[3]) {
-                            case "mod":
-                                if (!entry.getValue()[2].equals("")) { //If URL is not empty -> download new Version
-                                    try {
-                                        FileManager.downloadFile(entry.getValue()[2], modsPath + entry.getKey() + "-" + entry.getValue()[0] + ".jar");
-                                    } catch (IOException e) {
-                                        ret.add("[" + entry.getKey() + "] " + "Download failed.");
-                                        continue;
-                                    }
-                                    if (!entry.getValue()[1].equals("")) //If old version exists delete it
-                                        if (!FileManager.deleteLocalFile(modsPath + entry.getKey() + "-" + entry.getValue()[1] + ".jar")) {
-                                            ret.add("[" + entry.getKey() + "] " + "Warning: Deletion of file " + entry.getKey() + "-" + entry.getValue()[1] + ".jar failed.\n" +
-                                                    "Either someone touched the mod's file manually or this is a bug.");
-                                            //continue;
-                                        }
-                                } else {
-                                    if (!FileManager.deleteLocalFile(modsPath + entry.getKey() + "-" + entry.getValue()[1] + ".jar")) {
-                                        ret.add("[" + entry.getKey() + "] " + "Warning: Deletion of file " + entry.getKey() + "-" + entry.getValue()[1] + ".jar failed.\n" +
-                                                "Either someone touched the mod's file manually or this is a bug.");
-                                        //continue;
-                                    }
-                                }
-                                break;
-                            case "resourcepack":
-                                if (!entry.getValue()[2].equals("")) { //If URL is not empty -> download new Version
-                                    try {
-                                        FileManager.downloadFile(entry.getValue()[2], resourcePacksPath + entry.getKey() + "-" + entry.getValue()[0] + ".zip");
-                                    } catch (IOException e) {
-                                        ret.add("[" + entry.getKey() + "] " + "Download failed.");
-                                        continue;
-                                    }
-                                    if (!entry.getValue()[1].equals("")) //If old version exists delete it
-                                        if (!FileManager.deleteLocalFile(resourcePacksPath + entry.getKey() + "-" + entry.getValue()[1] + ".zip")) {
-                                            ret.add("[" + entry.getKey() + "] " + "Warning: Deletion of file " + entry.getKey() + "-" + entry.getValue()[1] + ".zip failed.\n" +
-                                                    "Either someone touched the resource pack's file manually or this is a bug.");
-                                            //continue;
-                                        }
-                                } else {
-                                    if (!FileManager.deleteLocalFile(resourcePacksPath + entry.getKey() + "-" + entry.getValue()[1] + ".zip")) {
-                                        ret.add("[" + entry.getKey() + "] " + "Warning: Deletion of file " + entry.getKey() + "-" + entry.getValue()[1] + ".zip failed.\n" +
-                                                "Either someone touched the resource pack's file manually or this is a bug.");
-                                        //continue;
-                                    }
-                                }
-                                break;
+				if (new_mods != null) {
+					updateProgress(current, toupdate);
 
-                            case "config":
-                                if (!entry.getValue()[2].equals("")) { //If URL is not empty -> download new Version
-                                    if (!FileManager.deleteLocalFolderContents(configPath)) { //delete current config files
-                                        ret.add("[" + entry.getKey() + "] " + "Either deleting the config folder's content or creating an empty config folder failed.");
-                                        continue;
-                                    }
+					final String modsPath = local_root + File.separator + "mods" + File.separator;
 
-                                    try {
-                                        FileManager.downloadFile(entry.getValue()[2], configPath + File.separator + entry.getKey() + "-" + entry.getValue()[0] + ".zip");
-                                    } catch (IOException e) {
-                                        ret.add("[" + entry.getKey() + "] " + "Download failed.");
-                                        continue;
-                                    }
+					for (Map.Entry<String, String[]> entry : new_mods.entrySet()) {
+						String type = entry.getValue()[3];
+						if ((type.equalsIgnoreCase("client") && server) || (type.equalsIgnoreCase("server") && !server)) {
+							continue;
+						}
+						updateMessage("Updating " + entry.getKey());
+						if (entry.getValue()[0].equalsIgnoreCase("delete")) {
+							if (!FileManager.deleteLocalFile(modsPath + entry.getKey() + "-" + entry.getValue()[1] + ".jar")) {
+								ret.add("[" + entry.getKey() + "] " + "Warning: Deletion of file " + entry.getKey() + "-" + entry.getValue()[1] + ".jar failed.\n" + "Either someone touched the mod's file manually or this is a bug.");
+							}
+							continue;
+						}
+						String url = "" + entry.getValue()[2];
+						if (!url.equals("")) {
+							try {
+								NetUtil.downloadFile(url, modsPath + entry.getKey() + "-" + entry.getValue()[1] + ".jar");
+							} catch (IOException e) {
+								ret.add("[" + entry.getKey() + "] " + "Download failed.");
+								continue;
+							}
+							if (!entry.getValue()[0].equals("")) 
+								if (!FileManager.deleteLocalFile(modsPath + entry.getKey() + "-" + entry.getValue()[0] + ".jar")) {
+									ret.add("[" + entry.getKey() + "] " + "Warning: Deletion of file " + entry.getKey() + "-" + entry.getValue()[1] + ".jar failed.\n" + "Either someone touched the mod's file manually or this is a bug.");
+								}
+						} else {
+							if (!FileManager.deleteLocalFile(modsPath + entry.getKey() + "-" + entry.getValue()[0] + ".jar")) {
+								ret.add("[" + entry.getKey() + "] " + "Warning: Deletion of file " + entry.getKey() + "-" + entry.getValue()[1] + ".jar failed.\n" + "Either someone touched the mod's file manually or this is a bug.");
+							}
+						}
 
-                                    if (!FileManager.unzipLocalFile(configPath + File.separator + entry.getKey() + "-" + entry.getValue()[0] + ".zip", configPath + File.separator)) {
-                                        ret.add("[" + entry.getKey() + "] " + "Unpack failed: The zip file seems to be corrupted.");
-                                        continue;
-                                    }
-                                } else {
-                                    if (!FileManager.deleteLocalFolderContents(configPath)) {
-                                        ret.add("[" + entry.getKey() + "] " + "Either deleting the config folder's content or creating an empty config folder failed.");
-                                        continue;
-                                    }
-                                }
-                                break;
+						mods.put(entry.getKey(), entry.getValue());
 
-                            case "resources":
-                                if (!entry.getValue()[2].equals("")) { //If URL is not empty -> download new Version
-                                    if (!FileManager.deleteLocalFolderContents(resourcesPath + File.separator + "resources")) { //delete current config files
-                                        ret.add("[" + entry.getKey() + "] " + "Either deleting the resources folder's content or creating an empty resources folder failed.");
-                                        continue;
-                                    }
-                                    if (!FileManager.deleteLocalFolderContents(resourcesPath + File.separator + "scripts")) {
-                                        ret.add("[" + entry.getKey() + "] " + "Either deleting the scripts folder's content or creating an empty scripts folder failed.");
-                                        continue;
-                                    }
+						current++;
+						updateProgress(current, new_mods.size());
+						System.out.println("Successfully updated " + entry.getKey());
+					}
+				}
 
-                                    try {
-                                        FileManager.downloadFile(entry.getValue()[2], resourcesPath + File.separator + "resources" + File.separator + entry.getKey() + "-" + entry.getValue()[0] + ".zip");
-                                    } catch (IOException e) {
-                                        ret.add("[" + entry.getKey() + "] " + "Download failed.");
-                                        continue;
-                                    }
+				if (!FileManager.writeLocalConfig(mods, local_root + File.separator + "mods.csv"))
+					ret.add("[PackInfo]" + "Error writing " + "mods.csv");
+				
+				//https://curse.nikky.moe/api/addon/238222/file/2682936
+				
 
-                                    if (!FileManager.unzipLocalFile(resourcesPath + File.separator + "resources" + File.separator + entry.getKey() + "-" + entry.getValue()[0] + ".zip", resourcesPath + File.separator)) {
-                                        ret.add("[" + entry.getKey() + "] " + "Unpack failed: The zip file seems to be corrupted.");
-                                        continue;
-                                    }
-                                } else {
-                                    if (!FileManager.deleteLocalFolderContents(resourcesPath + File.separator + "resources")) {
-                                        ret.add("[" + entry.getKey() + "] " + "Either deleting the resources folder's content or creating an empty resources folder failed.");
-                                        continue;
-                                    }
-                                    if (!FileManager.deleteLocalFolderContents(resourcesPath + File.separator + "scripts")) {
-                                        ret.add("[" + entry.getKey() + "] " + "Either deleting the scripts folder's content or creating an empty scripts folder failed.");
-                                        continue;
-                                    }
-                                }
-                                break;
+				if (new_curse != null) {
+					updateProgress(current, toupdate);
 
-                            default:
+					final String modsPath = local_root + File.separator + "mods" + File.separator;
 
-                        }
+					for (Map.Entry<String, String[]> entry : new_curse.entrySet()) {
+						String type = entry.getValue()[3];
+						if ((type.equalsIgnoreCase("client") && server) || (type.equalsIgnoreCase("server") && !server)) {
+							continue;
+						}
+						
+						updateMessage("Updating " + entry.getKey());
+						if (entry.getValue()[0].equalsIgnoreCase("delete")) {
+							if (!FileManager.deleteLocalFile(modsPath + entry.getKey() + "-" + entry.getValue()[2] + ".jar")) {
+								ret.add("[" + entry.getKey() + "] " + "Warning: Deletion of file " + entry.getKey() + "-" + entry.getValue()[1] + ".jar failed.\n" + "Either someone touched the mod's file manually or this is a bug.");
+							}
+							continue;
+						}
+						String url;
+						try {
+							url = new JSONObject(NetUtil.downloadUrl("https://curse.nikky.moe/api/addon/" + entry.getValue()[1] + "/file/" + entry.getValue()[3])).getString("downloadUrl");
+						} catch (JSONException | IOException e1) {
+							ret.add("[" + entry.getKey() + "] " + "Downloading file data failed.");
+							continue;
+						}
+						if (!url.equals("")) {
+							try {
+								NetUtil.downloadFile(url, modsPath + entry.getKey() + "-" + entry.getValue()[2] + ".jar");
+							} catch (IOException e) {
+								ret.add("[" + entry.getKey() + "] " + "Download failed.");
+								continue;
+							}
+							if (!entry.getValue()[1].equals("")) 
+								if (!FileManager.deleteLocalFile(modsPath + entry.getKey() + "-" + entry.getValue()[0] + ".jar")) {
+									ret.add("[" + entry.getKey() + "] " + "Warning: Deletion of file " + entry.getKey() + "-" + entry.getValue()[1] + ".jar failed.\n" + "Either someone touched the mod's file manually or this is a bug.");
+								}
+						} else {
+							if (!FileManager.deleteLocalFile(modsPath + entry.getKey() + "-" + entry.getValue()[0] + ".jar")) {
+								ret.add("[" + entry.getKey() + "] " + "Warning: Deletion of file " + entry.getKey() + "-" + entry.getValue()[1] + ".jar failed.\n" + "Either someone touched the mod's file manually or this is a bug.");
+							}
+						}
 
-                        updated.put(entry.getKey(), entry.getValue());
+						curse.put(entry.getKey(), entry.getValue());
 
-                        current++;
-                        updateProgress(current, updateables.size());
-                        System.out.println("Successfully updated " + entry.getKey());
-                    }
-                }
+						current++;
+						updateProgress(current, toupdate);
+						System.out.println("Successfully updated " + entry.getKey());
+					}
+				}
 
-                if(!FileManager.writeLocalConfig(updated, parameters.get(2) + File.separator + parameters.get(1)))
-                    ret.add("[PackInfo]" + "Error writing " + parameters.get(1));
+				if (!FileManager.writeLocalConfig(curse, local_root + File.separator + "curse.csv"))
+					ret.add("[PackInfo]" + "Error writing " + "curse.csv");
 
-                return ret;
-            }
-        };
+				
 
-        progress.progressProperty().bind(updater.progressProperty());
-        status.textProperty().bind(updater.messageProperty());
-        updater.setOnSucceeded(t -> {
-            List<String> returnValue = (List<String>) updater.getValue();
-            if (returnValue.size() > 0) {
-                main.errorAlert(returnValue);
-            }
-            primaryStage.close();
-        });
-        new Thread(updater).start();
-    }
+				if (new_files != null) {
+					updateProgress(current, toupdate);
+
+					for (Map.Entry<String, String[]> entry : new_files.entrySet()) {
+						String type = entry.getValue()[3];
+						if ((type.equalsIgnoreCase("client") && server) || (type.equalsIgnoreCase("server") && !server)) {
+							continue;
+						}
+						updateMessage("Updating " + entry.getKey());
+						if (entry.getValue()[0].equalsIgnoreCase("delete")) {
+							if (!FileManager.deleteLocalFile(local_root + entry.getValue()[2])) {
+								ret.add("[" + entry.getKey() + "] " + "Warning: Deletion of file " + entry.getKey() + "-" + entry.getValue()[1] + ".jar failed.\n" + "Either someone touched the mod's file manually or this is a bug.");
+							}
+							continue;
+						}
+						String url = entry.getValue()[2];
+
+						if (!url.equals("")) {
+							if (!entry.getValue()[0].equals("")) 
+								if (!FileManager.deleteLocalFile(local_root + entry.getValue()[2])) {
+									ret.add("[" + entry.getKey() + "] " + "Warning: Deletion of file " + entry.getValue()[2] + " failed.\n" + "Either someone touched the mod's file manually or this is a bug.");
+								}
+							try {
+								NetUtil.downloadFile(url, local_root + entry.getValue()[2]);
+							} catch (IOException e) {
+								ret.add("[" + entry.getKey() + "] " + "Download failed.");
+								continue;
+							}
+							
+						} else {
+							if (!FileManager.deleteLocalFile(local_root + entry.getValue()[2])) {
+								ret.add("[" + entry.getKey() + "] " + "Warning: Deletion of file " + entry.getValue()[2] + " failed.\n" + "Either someone touched the mod's file manually or this is a bug.");
+							}
+						}
+
+						files.put(entry.getKey(), entry.getValue());
+
+						current++;
+						updateProgress(current, toupdate);
+						System.out.println("Successfully updated " + entry.getKey());
+					}
+				}
+
+				if (!FileManager.writeLocalConfig(files, local_root + File.separator + "files.csv"))
+					ret.add("[PackInfo]" + "Error writing " + "files.csv");
+				
+
+				return ret;
+			}
+		};
+
+		progress.progressProperty().bind(updater.progressProperty());
+		status.textProperty().bind(updater.messageProperty());
+		updater.setOnSucceeded(t -> {
+			List<String> returnValue = (List<String>) updater.getValue();
+			if (returnValue.size() > 0) {
+				main.errorAlert(returnValue);
+			}
+			primaryStage.close();
+		});
+		new Thread(updater).start();
+	}
+	
+/*
+ * 
+							case "resourcepack":
+								if (!url.equals("")) { 
+									try {
+										NetUtil.downloadFile(url, resourcePacksPath + entry.getKey() + "-" + entry.getValue()[0] + ".zip");
+									} catch (IOException e) {
+										ret.add("[" + entry.getKey() + "] " + "Download failed.");
+										continue;
+									}
+									if (!entry.getValue()[1].equals("")) 
+										if (!FileManager.deleteLocalFile(resourcePacksPath + entry.getKey() + "-" + entry.getValue()[1] + ".zip")) {
+											ret.add("[" + entry.getKey() + "] " + "Warning: Deletion of file " + entry.getKey() + "-" + entry.getValue()[1] + ".zip failed.\n" + "Either someone touched the resource pack's file manually or this is a bug.");
+											// continue;
+										}
+								} else {
+									if (!FileManager.deleteLocalFile(resourcePacksPath + entry.getKey() + "-" + entry.getValue()[1] + ".zip")) {
+										ret.add("[" + entry.getKey() + "] " + "Warning: Deletion of file " + entry.getKey() + "-" + entry.getValue()[1] + ".zip failed.\n" + "Either someone touched the resource pack's file manually or this is a bug.");
+										// continue;
+									}
+								}
+								break;
+
+							case "config":
+								if (!url.equals("")) {
+									if (!FileManager.deleteLocalFolderContents(configPath)) {
+										ret.add("[" + entry.getKey() + "] " + "Either deleting the config folder's content or creating an empty config folder failed.");
+										continue;
+									}
+
+									try {
+										NetUtil.downloadFile(url, configPath + File.separator + entry.getKey() + "-" + entry.getValue()[0] + ".zip");
+									} catch (IOException e) {
+										ret.add("[" + entry.getKey() + "] " + "Download failed.");
+										continue;
+									}
+
+									if (!FileManager.unzipLocalFile(configPath + File.separator + entry.getKey() + "-" + entry.getValue()[0] + ".zip", configPath + File.separator)) {
+										ret.add("[" + entry.getKey() + "] " + "Unpack failed: The zip file seems to be corrupted.");
+										continue;
+									}
+								} else {
+									if (!FileManager.deleteLocalFolderContents(configPath)) {
+										ret.add("[" + entry.getKey() + "] " + "Either deleting the config folder's content or creating an empty config folder failed.");
+										continue;
+									}
+								}
+								break;
+
+							case "resources":
+								if (!url.equals("")) { 
+									if (!FileManager.deleteLocalFolderContents(resourcesPath + File.separator + "resources")) { 
+										ret.add("[" + entry.getKey() + "] " + "Either deleting the resources folder's content or creating an empty resources folder failed.");
+										continue;
+									}
+									if (!FileManager.deleteLocalFolderContents(resourcesPath + File.separator + "scripts")) {
+										ret.add("[" + entry.getKey() + "] " + "Either deleting the scripts folder's content or creating an empty scripts folder failed.");
+										continue;
+									}
+
+									try {
+										NetUtil.downloadFile(url, resourcesPath + File.separator + "resources" + File.separator + entry.getKey() + "-" + entry.getValue()[0] + ".zip");
+									} catch (IOException e) {
+										ret.add("[" + entry.getKey() + "] " + "Download failed.");
+										continue;
+									}
+
+									if (!FileManager.unzipLocalFile(resourcesPath + File.separator + "resources" + File.separator + entry.getKey() + "-" + entry.getValue()[0] + ".zip", resourcesPath + File.separator)) {
+										ret.add("[" + entry.getKey() + "] " + "Unpack failed: The zip file seems to be corrupted.");
+										continue;
+									}
+								} else {
+									if (!FileManager.deleteLocalFolderContents(resourcesPath + File.separator + "resources")) {
+										ret.add("[" + entry.getKey() + "] " + "Either deleting the resources folder's content or creating an empty resources folder failed.");
+										continue;
+									}
+									if (!FileManager.deleteLocalFolderContents(resourcesPath + File.separator + "scripts")) {
+										ret.add("[" + entry.getKey() + "] " + "Either deleting the scripts folder's content or creating an empty scripts folder failed.");
+										continue;
+									}
+								}
+								break;
+
+							default:*/
+ 
 }

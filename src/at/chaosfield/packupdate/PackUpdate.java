@@ -1,5 +1,7 @@
 package at.chaosfield.packupdate;
 
+import java.io.IOException;
+import java.util.List;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -10,9 +12,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-
-import java.io.IOException;
-import java.util.List;
 
 /**
  * Created by Jakob (XDjackieXD) Riepler
@@ -36,7 +35,7 @@ public class PackUpdate extends Application{
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("Updating");
         parameters = this.getParameters().getRaw();
-        if(parameters.size() != 3){
+        if(parameters.size() != 5){
             errorAlert("Wrong Parameters",
                     "Pack Updater was provided with the wrong Parameters",
                     "If you did not modify any instance settings\nplease contact the modpack author!");
