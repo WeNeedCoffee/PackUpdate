@@ -102,7 +102,7 @@ public class FileManager {
 				String[] parsed = tmp.split(",");
 				String[] t = new String[parsed.length - 1];
 				for (int i = 1; i < parsed.length; i++) {
-					t[i-1] = parsed[i];
+					t[i - 1] = parsed[i];
 				}
 				parsedInfo.put(parsed[0], t);
 			}
@@ -164,14 +164,25 @@ public class FileManager {
 		}
 
 		for (Map.Entry<String, String[]> entry : objects.entrySet()) {
-			packInfo.put(entry.getKey(), new String[] { entry.getValue()[0], entry.getValue()[2], entry.getValue()[3] });
+			String[] parsed = entry.getValue();
+			String[] t = new String[parsed.length - 1];
+			for (int i = 1; i < parsed.length; i++) {
+				t[i - 1] = parsed[i];
+			}
+			packInfo.put(entry.getKey(), t);
 		}
 
 		try {
 			PrintWriter writer = new PrintWriter(fileName, "UTF-8");
 			for (Map.Entry<String, String[]> entry : packInfo.entrySet()) {
-				if (!entry.getValue()[2].equals("") && !entry.getValue()[0].equals(""))
-					writer.println(entry.getKey() + "," + entry.getValue()[0] + "," + entry.getValue()[1] + "," + entry.getValue()[2]);
+
+				if (entry.getValue()[0].equals(""))
+					continue;
+				String s = entry.getKey();
+				for (String e : entry.getValue()) {
+					s += "," + e;
+				}
+				writer.println(s);
 			}
 			writer.close();
 		} catch (Exception e) {
