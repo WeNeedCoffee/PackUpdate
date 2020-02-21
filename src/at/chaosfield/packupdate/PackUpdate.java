@@ -35,7 +35,7 @@ public class PackUpdate extends Application{
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("Updating");
         parameters = this.getParameters().getRaw();
-        if(parameters.size() != 5){
+        if(parameters.size() < 2){
             errorAlert("Wrong Parameters",
                     "Pack Updater was provided with the wrong Parameters",
                     "If you did not modify any instance settings\nplease contact the modpack author!");

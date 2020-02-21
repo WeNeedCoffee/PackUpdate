@@ -34,9 +34,9 @@ public class FxController {
 		
 		this.primaryStage = main.primaryStage;
 		//this.parameters = main.getParameters().getRaw();
-		String remote_root = "https://raw.githubusercontent.com/WeNeedCoffee/Convergence/Resurgence/";
-		String local_root = main.getParameters().getRaw().get(2);
-		boolean server = main.getParameters().getRaw().get(4).equalsIgnoreCase("server") ? true : false;
+		String remote_root = "https://raw.githubusercontent.com/WeNeedCoffee/Convergence/master/";
+		String local_root = main.getParameters().getRaw().get(0);
+		boolean server = main.getParameters().getRaw().get(1).equalsIgnoreCase("server") ? true : false;
 
 		Task<List<String>> updater = new Task<List<String>>() {
 			@Override
@@ -214,7 +214,7 @@ public class FxController {
 						updateMessage("Updating " + entry.getKey());
 						if (entry.getValue()[0].equalsIgnoreCase("delete")) {
 							if (!FileManager.deleteLocalFile(local_root + entry.getValue()[2])) {
-								ret.add("[" + entry.getKey() + "] " + "Warning: Deletion of file " + entry.getKey() + "-" + entry.getValue()[1] + ".jar failed.\n" + "Either someone touched the mod's file manually or this is a bug.");
+								ret.add("[" + entry.getKey() + "] " + "Warning: Deletion of file " + entry.getKey() + "-" + entry.getValue()[1] + " failed.\n" + "Either someone touched the mod's file manually or this is a bug.");
 							}
 							continue;
 						}

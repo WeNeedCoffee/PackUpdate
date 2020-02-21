@@ -41,7 +41,7 @@ public class FileManager {
 	}
 
 	public static boolean unzipLocalFile(String zipFile, String outputPath) {
-		
+
 		byte[] buffer = new byte[1024];
 
 		try {
@@ -100,9 +100,11 @@ public class FileManager {
 		while ((tmp = packinfo.readLine()) != null) {
 			if (!(tmp.equals("") || tmp.startsWith("#"))) {
 				String[] parsed = tmp.split(",");
-				if (parsed.length == 4) {
-					parsedInfo.put(parsed[0], new String[] { parsed[1], parsed[2], parsed[3] });
+				String[] t = new String[parsed.length - 1];
+				for (int i = 1; i < parsed.length; i++) {
+					t[i-1] = parsed[i];
 				}
+				parsedInfo.put(parsed[0], t);
 			}
 		}
 		return parsedInfo;
