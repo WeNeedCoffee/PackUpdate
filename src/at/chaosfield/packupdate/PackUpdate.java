@@ -27,7 +27,8 @@ public class PackUpdate extends Application {
     List<String> parameters;
 
     public static void main(String[] args){
-        launch(args);
+        //launch(args);
+    	launch(new String[] {"S:/Minecraft/MultiMC/instances/Convergence - Roots/.minecraft", "client"});
     }
 
     @Override

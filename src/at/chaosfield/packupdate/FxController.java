@@ -125,7 +125,7 @@ public class FxController {
 									// TODO Auto-generated catch block
 									e.printStackTrace();
 								}
-								new File(modsPath + entry.getKey() + "-" + entry.getValue()[1] + ".jar").mkdirs();
+								new File(modsPath + entry.getKey() + "-" + entry.getValue()[1] + ".jar").getParentFile().mkdirs();
 								NetUtil.downloadFile(url, modsPath + entry.getKey() + "-" + entry.getValue()[1] + ".jar");
 							} catch (IOException e) {
 								ret.add("[" + entry.getKey() + "] " + "Download failed.");
@@ -188,7 +188,7 @@ public class FxController {
 									// TODO Auto-generated catch block
 									e.printStackTrace();
 								}
-								new File(modsPath + entry.getKey() + "-" + entry.getValue()[2] + ".jar").mkdirs();
+								new File(modsPath + entry.getKey() + "-" + entry.getValue()[2] + ".jar").getParentFile().mkdirs();
 								NetUtil.downloadFile(url, modsPath + entry.getKey() + "-" + entry.getValue()[2] + ".jar");
 							} catch (IOException e) {
 								ret.add("[" + entry.getKey() + "] " + "Download failed.");
@@ -221,7 +221,7 @@ public class FxController {
 					updateProgress(current, toupdate);
 
 					for (Map.Entry<String, String[]> entry : new_files.entrySet()) {
-						String type = entry.getValue()[3];
+						String type = entry.getValue()[4];
 						if ((type.equalsIgnoreCase("client") && server) || (type.equalsIgnoreCase("server") && !server)) {
 							continue;
 						}
@@ -232,7 +232,7 @@ public class FxController {
 							}
 							continue;
 						}
-						String url = entry.getValue()[2];
+						String url = entry.getValue()[3];
 
 						if (!url.equals("")) {
 							if (!entry.getValue()[0].equals("")) 
@@ -246,9 +246,10 @@ public class FxController {
 									// TODO Auto-generated catch block
 									e.printStackTrace();
 								}
-								new File(local_root + entry.getValue()[3]).mkdirs();
-								NetUtil.downloadFile(url, local_root + entry.getValue()[3]);
+								new File(local_root + entry.getValue()[2]).getParentFile().mkdirs();
+								NetUtil.downloadFile(url, local_root + entry.getValue()[2]);
 							} catch (IOException e) {
+								e.printStackTrace();
 								ret.add("[" + entry.getKey() + "] " + "Download failed.");
 								continue;
 							}
