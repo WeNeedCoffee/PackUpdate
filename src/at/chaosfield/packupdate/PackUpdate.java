@@ -16,7 +16,7 @@ import javafx.stage.Stage;
 /**
  * Created by Jakob (XDjackieXD) Riepler
  */
-public class PackUpdate extends Application{
+public class PackUpdate extends Application {
 
     protected Stage primaryStage;
     protected VBox rootLayout;

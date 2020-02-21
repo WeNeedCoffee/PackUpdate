@@ -119,6 +119,12 @@ public class FxController {
 						String url = "" + entry.getValue()[2];
 						if (!url.equals("")) {
 							try {
+								try {
+									Thread.sleep(300);
+								} catch (InterruptedException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
 								NetUtil.downloadFile(url, modsPath + entry.getKey() + "-" + entry.getValue()[1] + ".jar");
 							} catch (IOException e) {
 								ret.add("[" + entry.getKey() + "] " + "Download failed.");
@@ -175,6 +181,12 @@ public class FxController {
 						}
 						if (!url.equals("")) {
 							try {
+								try {
+									Thread.sleep(300);
+								} catch (InterruptedException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
 								NetUtil.downloadFile(url, modsPath + entry.getKey() + "-" + entry.getValue()[2] + ".jar");
 							} catch (IOException e) {
 								ret.add("[" + entry.getKey() + "] " + "Download failed.");
@@ -214,7 +226,7 @@ public class FxController {
 						updateMessage("Updating " + entry.getKey());
 						if (entry.getValue()[0].equalsIgnoreCase("delete")) {
 							if (!FileManager.deleteLocalFile(local_root + entry.getValue()[2])) {
-								ret.add("[" + entry.getKey() + "] " + "Warning: Deletion of file " + entry.getKey() + "-" + entry.getValue()[1] + " failed.\n" + "Either someone touched the mod's file manually or this is a bug.");
+								ret.add("[" + entry.getKey() + "] " + "Warning: Deletion of file " + entry.getKey() + "-" + entry.getValue()[2] + " failed.\n" + "Either someone touched the mod's file manually or this is a bug.");
 							}
 							continue;
 						}
@@ -226,14 +238,20 @@ public class FxController {
 									ret.add("[" + entry.getKey() + "] " + "Warning: Deletion of file " + entry.getValue()[2] + " failed.\n" + "Either someone touched the mod's file manually or this is a bug.");
 								}
 							try {
-								NetUtil.downloadFile(url, local_root + entry.getValue()[2]);
+								try {
+									Thread.sleep(300);
+								} catch (InterruptedException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+								NetUtil.downloadFile(url, local_root + entry.getValue()[3]);
 							} catch (IOException e) {
 								ret.add("[" + entry.getKey() + "] " + "Download failed.");
 								continue;
 							}
 							
 						} else {
-							if (!FileManager.deleteLocalFile(local_root + entry.getValue()[2])) {
+							if (!FileManager.deleteLocalFile(local_root + entry.getValue()[3])) {
 								ret.add("[" + entry.getKey() + "] " + "Warning: Deletion of file " + entry.getValue()[2] + " failed.\n" + "Either someone touched the mod's file manually or this is a bug.");
 							}
 						}
