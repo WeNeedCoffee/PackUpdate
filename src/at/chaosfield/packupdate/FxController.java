@@ -120,11 +120,12 @@ public class FxController {
 						if (!url.equals("")) {
 							try {
 								try {
-									Thread.sleep(300);
+									Thread.sleep(100);
 								} catch (InterruptedException e) {
 									// TODO Auto-generated catch block
 									e.printStackTrace();
 								}
+								new File(modsPath + entry.getKey() + "-" + entry.getValue()[1] + ".jar").mkdirs();
 								NetUtil.downloadFile(url, modsPath + entry.getKey() + "-" + entry.getValue()[1] + ".jar");
 							} catch (IOException e) {
 								ret.add("[" + entry.getKey() + "] " + "Download failed.");
@@ -182,11 +183,12 @@ public class FxController {
 						if (!url.equals("")) {
 							try {
 								try {
-									Thread.sleep(300);
+									Thread.sleep(100);
 								} catch (InterruptedException e) {
 									// TODO Auto-generated catch block
 									e.printStackTrace();
 								}
+								new File(modsPath + entry.getKey() + "-" + entry.getValue()[2] + ".jar").mkdirs();
 								NetUtil.downloadFile(url, modsPath + entry.getKey() + "-" + entry.getValue()[2] + ".jar");
 							} catch (IOException e) {
 								ret.add("[" + entry.getKey() + "] " + "Download failed.");
@@ -239,11 +241,12 @@ public class FxController {
 								}
 							try {
 								try {
-									Thread.sleep(300);
+									Thread.sleep(100);
 								} catch (InterruptedException e) {
 									// TODO Auto-generated catch block
 									e.printStackTrace();
 								}
+								new File(local_root + entry.getValue()[3]).mkdirs();
 								NetUtil.downloadFile(url, local_root + entry.getValue()[3]);
 							} catch (IOException e) {
 								ret.add("[" + entry.getKey() + "] " + "Download failed.");
