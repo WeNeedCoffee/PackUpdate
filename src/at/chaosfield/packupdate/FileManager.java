@@ -157,11 +157,11 @@ public class FileManager {
 
 		HashMap<String, String[]> packInfo = new HashMap<>();
 
-		try {
+		/*try {
 			packInfo = parsePackinfo(getLocalFile(fileName));
 		} catch (IOException e) {
 			System.out.println("[PackInfo] Warning: could not get previous config. Ignore this if it is the first launch of the pack.");
-		}
+		}*/
 
 		for (Map.Entry<String, String[]> entry : objects.entrySet()) {
 			String[] parsed = entry.getValue();
