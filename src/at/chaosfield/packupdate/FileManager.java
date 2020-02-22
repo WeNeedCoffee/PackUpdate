@@ -144,6 +144,7 @@ public class FileManager {
 			String[] data = new String[entry.getValue().length + 2];
 			int i = 2;
 			data[0] = "delete";
+			data[1] = "";
 			for (String s : entry.getValue()) {
 				data[i] = s;
 				i++;
@@ -165,10 +166,6 @@ public class FileManager {
 
 		for (Map.Entry<String, String[]> entry : objects.entrySet()) {
 			String[] parsed = entry.getValue();
-			if (parsed[0].equalsIgnoreCase("delete") && packInfo.containsKey(entry.getKey())) {
-				packInfo.remove(entry.getKey());
-				continue;
-			}
 			String[] t = new String[parsed.length - 1];
 			for (int i = 1; i < parsed.length; i++) {
 				t[i - 1] = parsed[i];
