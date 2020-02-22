@@ -35,7 +35,7 @@
 						<configuration>
 							<archive>
 								<manifest>
-									<mainClass>at.chaosfield.packupdate.Packupdate</mainClass>
+									<mainClass>at.chaosfield.packupdate.PackUpdate</mainClass>
 								</manifest>
 							</archive>
 							<descriptorRefs>
