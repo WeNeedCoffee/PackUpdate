@@ -157,14 +157,18 @@ public class FileManager {
 
 		HashMap<String, String[]> packInfo = new HashMap<>();
 
-		/*try {
+		try {
 			packInfo = parsePackinfo(getLocalFile(fileName));
 		} catch (IOException e) {
 			System.out.println("[PackInfo] Warning: could not get previous config. Ignore this if it is the first launch of the pack.");
-		}*/
+		}
 
 		for (Map.Entry<String, String[]> entry : objects.entrySet()) {
 			String[] parsed = entry.getValue();
+			if (parsed[0].equalsIgnoreCase("delete") && packInfo.containsKey(entry.getKey())) {
+				packInfo.remove(entry.getKey());
+				continue;
+			}
 			String[] t = new String[parsed.length - 1];
 			for (int i = 1; i < parsed.length; i++) {
 				t[i - 1] = parsed[i];
