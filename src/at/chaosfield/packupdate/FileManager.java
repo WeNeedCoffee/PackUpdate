@@ -141,8 +141,8 @@ public class FileManager {
 			localPackInfo.remove(entry.getKey());
 		}
 		for (Map.Entry<String, String[]> entry : localPackInfo.entrySet()) {
-			String[] data = new String[entry.getValue().length + 1];
-			int i = 1;
+			String[] data = new String[entry.getValue().length + 2];
+			int i = 2;
 			data[0] = "delete";
 			for (String s : entry.getValue()) {
 				data[i] = s;

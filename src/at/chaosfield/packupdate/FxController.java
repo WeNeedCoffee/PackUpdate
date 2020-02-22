@@ -72,8 +72,8 @@ public class FxController {
 
 				try {
 					new_mods = FileManager.getAvailableUpdates(remote_root + "mods.csv", local_root + File.separator + "mods.csv");
-					updateMessage("To Update: " + new_mods.size());
 					toupdate += new_mods.size();
+					updateMessage("To Update: " + toupdate);
 				} catch (IOException e) {
 					ret.add("[PackUpdate] Downloading \"" + remote_root + "mods.csv" + "\" failed.");
 					e.printStackTrace();
@@ -81,8 +81,8 @@ public class FxController {
 				
 				try {
 					new_curse = FileManager.getAvailableUpdates(remote_root + "curse.csv", local_root + File.separator + "curse.csv");
-					updateMessage("To Update: " + new_curse.size());
 					toupdate += new_curse.size();
+					updateMessage("To Update: " + toupdate);
 				} catch (IOException e) {
 					ret.add("[PackUpdate] Downloading \"" + remote_root + "curse.csv" + "\" failed.");
 					e.printStackTrace();
@@ -91,8 +91,8 @@ public class FxController {
 
 				try {
 					new_files = FileManager.getAvailableUpdates(remote_root + "files.csv", local_root + File.separator + "files.csv");
-					updateMessage("To Update: " + new_files.size());
 					toupdate += new_files.size();
+					updateMessage("To Update: " + toupdate);
 				} catch (IOException e) {
 					ret.add("[PackUpdate] Downloading \"" + remote_root + "files.csv" + "\" failed.");
 					e.printStackTrace();
@@ -111,8 +111,8 @@ public class FxController {
 						}
 						updateMessage("Updating " + entry.getKey());
 						if (entry.getValue()[0].equalsIgnoreCase("delete")) {
-							if (!FileManager.deleteLocalFile(modsPath + entry.getKey() + "-" + entry.getValue()[1] + ".jar")) {
-								ret.add("[" + entry.getKey() + "] " + "Warning: Deletion of file " + entry.getKey() + "-" + entry.getValue()[1] + ".jar failed.\n" + "Either someone touched the mod's file manually or this is a bug.");
+							if (!FileManager.deleteLocalFile(modsPath + entry.getKey() + "-" + entry.getValue()[2] + ".jar")) {
+								ret.add("[" + entry.getKey() + "] " + "Warning: Deletion of file " + entry.getKey() + "-" + entry.getValue()[2] + ".jar failed.\n" + "Either someone touched the mod's file manually or this is a bug.");
 							}
 							continue;
 						}
@@ -136,15 +136,16 @@ public class FxController {
 									ret.add("[" + entry.getKey() + "] " + "Warning: Deletion of file " + entry.getKey() + "-" + entry.getValue()[1] + ".jar failed.\n" + "Either someone touched the mod's file manually or this is a bug.");
 								}
 						} else {
-							if (!FileManager.deleteLocalFile(modsPath + entry.getKey() + "-" + entry.getValue()[1] + ".jar")) {
-								ret.add("[" + entry.getKey() + "] " + "Warning: Deletion of file " + entry.getKey() + "-" + entry.getValue()[1] + ".jar failed.\n" + "Either someone touched the mod's file manually or this is a bug.");
+							if (!FileManager.deleteLocalFile(modsPath + entry.getKey() + "-" + entry.getValue()[2] + ".jar")) {
+								ret.add("[" + entry.getKey() + "] " + "Warning: Deletion of file " + entry.getKey() + "-" + entry.getValue()[2] + ".jar failed.\n" + "Either someone touched the mod's file manually or this is a bug.");
 							}
+							continue;
 						}
 
 						mods.put(entry.getKey(), entry.getValue());
 
 						current++;
-						updateProgress(current, new_mods.size());
+						updateProgress(current, toupdate);
 						System.out.println("Successfully updated " + entry.getKey());
 					}
 				}
