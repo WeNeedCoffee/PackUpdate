@@ -118,7 +118,7 @@ public class FxController {
 
 							current++;
 							updateProgress(current, toupdate);
-							System.out.println("Successfully updated " + entry.getKey());
+							System.out.println("Successfully removed " + entry.getKey());
 							continue;
 						}
 						String url = "" + entry.getValue()[2];
@@ -226,33 +226,38 @@ public class FxController {
 					updateProgress(current, toupdate);
 
 					for (Map.Entry<String, String[]> entry : new_files.entrySet()) {
-						String type = entry.getValue()[4];
+						String type = entry.getValue()[3];
 						if ((type.equalsIgnoreCase("client") && server) || (type.equalsIgnoreCase("server") && !server)) {
 							continue;
 						}
 						updateMessage("Updating " + entry.getKey());
 						if (entry.getValue()[0].equalsIgnoreCase("delete")) {
-							if (!FileManager.deleteLocalFile(local_root + entry.getValue()[2])) {
-								ret.add("[" + entry.getKey() + "] " + "Warning: Deletion of file " + entry.getKey() + "-" + entry.getValue()[2] + " failed.\n" + "Either someone touched the mod's file manually or this is a bug.");
+							if (entry.getKey().contains(File.separatorChar + "")) {
+								if (!FileManager.deleteLocalFile(local_root + entry.getKey())) {
+									ret.add("[" + entry.getKey() + "] " + "Warning: Deletion of file " + entry.getKey() + " failed.\n" + "Either someone touched the mod's file manually or this is a bug.");
+								}
 							}
+							files.put(entry.getKey(), entry.getValue());
+
+							current++;
+							updateProgress(current, toupdate);
 							continue;
 						}
-						String url = entry.getValue()[3];
+						String url = entry.getValue()[2];
 
 						if (!url.equals("")) {
 							if (!entry.getValue()[0].equals("")) 
-								if (!FileManager.deleteLocalFile(local_root + entry.getValue()[2])) {
-									ret.add("[" + entry.getKey() + "] " + "Warning: Deletion of file " + entry.getValue()[2] + " failed.\n" + "Either someone touched the mod's file manually or this is a bug.");
+								if (!FileManager.deleteLocalFile(local_root + entry.getKey())) {
+									ret.add("[" + entry.getKey() + "] " + "Warning: Deletion of file " + entry.getKey()+ " failed.\n" + "Either someone touched the mod's file manually or this is a bug.");
 								}
 							try {
 								try {
 									Thread.sleep(100);
 								} catch (InterruptedException e) {
-									// TODO Auto-generated catch block
 									e.printStackTrace();
 								}
-								new File(local_root + entry.getValue()[2]).getParentFile().mkdirs();
-								NetUtil.downloadFile(url, local_root + entry.getValue()[2]);
+								new File(local_root + entry.getKey()).getParentFile().mkdirs();
+								NetUtil.downloadFile(url, local_root + entry.getKey());
 							} catch (IOException e) {
 								e.printStackTrace();
 								ret.add("[" + entry.getKey() + "] " + "Download failed.");
@@ -260,8 +265,8 @@ public class FxController {
 							}
 							
 						} else {
-							if (!FileManager.deleteLocalFile(local_root + entry.getValue()[3])) {
-								ret.add("[" + entry.getKey() + "] " + "Warning: Deletion of file " + entry.getValue()[2] + " failed.\n" + "Either someone touched the mod's file manually or this is a bug.");
+							if (!FileManager.deleteLocalFile(local_root + entry.getKey())) {
+								ret.add("[" + entry.getKey() + "] " + "Warning: Deletion of file " + entry.getKey() + " failed.\n" + "Either someone touched the mod's file manually or this is a bug.");
 							}
 						}
 
