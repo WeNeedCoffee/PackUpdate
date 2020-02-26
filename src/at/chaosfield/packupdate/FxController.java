@@ -141,8 +141,8 @@ public class FxController {
 									ret.add("[" + entry.getKey() + "] " + "Warning: Deletion of file " + entry.getKey() + "-" + entry.getValue()[1] + ".jar failed.\n" + "Either someone touched the mod's file manually or this is a bug.");
 								}
 						} else {
-							if (!FileManager.deleteLocalFile(modsPath + entry.getKey() + "-" + entry.getValue()[2] + ".jar")) {
-								ret.add("[" + entry.getKey() + "] " + "Warning: Deletion of file " + entry.getKey() + "-" + entry.getValue()[2] + ".jar failed.\n" + "Either someone touched the mod's file manually or this is a bug.");
+							if (!FileManager.deleteLocalFile(modsPath + entry.getKey() + "-" + entry.getValue()[1] + ".jar")) {
+								ret.add("[" + entry.getKey() + "] " + "Warning: Deletion of file " + entry.getKey() + "-" + entry.getValue()[1] + ".jar failed.\n" + "Either someone touched the mod's file manually or this is a bug.");
 							}
 						}
 
