@@ -111,8 +111,10 @@ public class FxController {
 						}
 						updateMessage("Updating " + entry.getKey());
 						if (entry.getValue()[0].equalsIgnoreCase("delete")) {
-							if (!FileManager.deleteLocalFile(modsPath + entry.getKey() + "-" + entry.getValue()[2] + ".jar")) {
-								ret.add("[" + entry.getKey() + "] " + "Warning: Deletion of file " + entry.getKey() + "-" + entry.getValue()[2] + ".jar failed.\n" + "Either someone touched the mod's file manually or this is a bug.");
+							if (!FileManager.deleteLocalFile(modsPath + entry.getKey() + "-" + entry.getValue()[1] + ".jar")) {
+								if (!FileManager.deleteLocalFile(modsPath + entry.getKey() + "-" + entry.getValue()[2] + ".jar")) { //TODO this is a backwards compat
+									ret.add("[" + entry.getKey() + "] " + "Warning: Deletion of file " + entry.getKey() /*+ "-" + entry.getValue()[2]*/ + ".jar failed.\n" + "Either someone touched the mod's file manually or this is a bug.");
+								}
 							}
 							mods.put(entry.getKey(), entry.getValue());
 
@@ -130,19 +132,19 @@ public class FxController {
 									// TODO Auto-generated catch block
 									e.printStackTrace();
 								}
-								new File(modsPath + entry.getKey() + "-" + entry.getValue()[1] + ".jar").getParentFile().mkdirs();
-								NetUtil.downloadFile(url, modsPath + entry.getKey() + "-" + entry.getValue()[1] + ".jar");
+								new File(modsPath + entry.getKey() + "-" + entry.getValue()[0] + ".jar").getParentFile().mkdirs();
+								NetUtil.downloadFile(url, modsPath + entry.getKey() + "-" + entry.getValue()[0] + ".jar");
 							} catch (IOException e) {
 								ret.add("[" + entry.getKey() + "] " + "Download failed.");
 								continue;
 							}
 							if (!entry.getValue()[0].equals("")) 
-								if (!FileManager.deleteLocalFile(modsPath + entry.getKey() + "-" + entry.getValue()[1] + ".jar")) {
-									ret.add("[" + entry.getKey() + "] " + "Warning: Deletion of file " + entry.getKey() + "-" + entry.getValue()[1] + ".jar failed.\n" + "Either someone touched the mod's file manually or this is a bug.");
+								if (!FileManager.deleteLocalFile(modsPath + entry.getKey() + "-" + entry.getValue()[0] + ".jar")) {
+									ret.add("[" + entry.getKey() + "] " + "Warning: Deletion of file " + entry.getKey() + "-" + entry.getValue()[0] + ".jar failed.\n" + "Either someone touched the mod's file manually or this is a bug.");
 								}
 						} else {
-							if (!FileManager.deleteLocalFile(modsPath + entry.getKey() + "-" + entry.getValue()[1] + ".jar")) {
-								ret.add("[" + entry.getKey() + "] " + "Warning: Deletion of file " + entry.getKey() + "-" + entry.getValue()[1] + ".jar failed.\n" + "Either someone touched the mod's file manually or this is a bug.");
+							if (!FileManager.deleteLocalFile(modsPath + entry.getKey() + "-" + entry.getValue()[0] + ".jar")) {
+								ret.add("[" + entry.getKey() + "] " + "Warning: Deletion of file " + entry.getKey() + "-" + entry.getValue()[0] + ".jar failed.\n" + "Either someone touched the mod's file manually or this is a bug.");
 							}
 						}
 
