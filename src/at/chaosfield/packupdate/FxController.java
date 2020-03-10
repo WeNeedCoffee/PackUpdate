@@ -183,8 +183,9 @@ public class FxController {
 						}
 						String url = "";
 						try {
-							url = new JSONObject(NetUtil.downloadUrl("http://dms.zapto.org:801/api/addon/" + entry.getValue()[2] + "/file/" + entry.getValue()[3])).getString("downloadUrl");
+							url = new JSONObject(new String(NetUtil.downloadUrl("http://dms.zapto.org:801/api/addon/" + entry.getValue()[2] + "/file/" + entry.getValue()[3]))).getString("downloadUrl");
 						} catch (JSONException | IOException e1) {
+							e1.printStackTrace();
 							ret.add("[" + entry.getKey() + "] " + "Downloading file data failed.");
 							continue;
 						}
