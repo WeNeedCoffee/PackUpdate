@@ -102,48 +102,45 @@ public class FxController {
 
 					for (Map.Entry<String, String[]> entry : new_mods.entrySet()) {
 						String type = entry.getValue()[3];
-
+						if ((type.equalsIgnoreCase("client") && server) || (type.equalsIgnoreCase("server") && !server)) {
+							current++;
+							updateProgress(current, toupdate);
+							continue;
+						}
 						updateMessage("Updating " + entry.getKey());
 						if (entry.getValue()[0].equalsIgnoreCase("delete")) {
 							if (!FileManager.deleteLocalFile(modsPath + entry.getKey() + "-" + entry.getValue()[2] + ".jar")) {
 								ret.add("[" + entry.getKey() + "] " + "Warning: Deletion of file " + entry.getKey() + "-" + entry.getValue()[2] + ".jar failed.\n" + "Either someone touched the mod's file manually or this is a bug.");
 							}
 							mods.put(entry.getKey(), entry.getValue());
-
 							current++;
 							updateProgress(current, toupdate);
 							System.out.println("Successfully removed " + entry.getKey());
 							continue;
 						}
-						String url = "" + entry.getValue()[2];
-						if (!url.equals("")) {
-							if (!entry.getValue()[0].equals(""))
-								if (!FileManager.deleteLocalFile(modsPath + entry.getKey() + "-" + entry.getValue()[0] + ".jar")) {
-									ret.add("[" + entry.getKey() + "] " + "Warning: Deletion of file " + entry.getKey() + "-" + entry.getValue()[0] + ".jar failed.\n" + "Either someone touched the mod's file manually or this is a bug.");
-								}
+						//0=old or empty
+						//1=new
+						//2=url
+						//3=side
+						String url = entry.getValue()[2];
+						//delete the old file
+						if (!entry.getValue()[0].equals("")) {
+							if (!FileManager.deleteLocalFile(modsPath + entry.getKey() + "-" + entry.getValue()[0] + ".jar")) {
+								ret.add("[" + entry.getKey() + "] " + "Warning: Deletion of file " + entry.getKey() + "-" + entry.getValue()[0] + ".jar failed.\n" + "Either someone touched the mod's file manually or this is a bug.");
+							}
+						}
+						try {
 							try {
-								try {
-									Thread.sleep(100);
-								} catch (InterruptedException e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-								}
-								if ((type.equalsIgnoreCase("client") && server) || (type.equalsIgnoreCase("server") && !server)) {
-									current++;
-									updateProgress(current, toupdate);
-									continue;
-								}
-								new File(modsPath + entry.getKey() + "-" + entry.getValue()[1] + ".jar").getParentFile().mkdirs();
-								NetUtil.downloadFile(url, modsPath + entry.getKey() + "-" + entry.getValue()[1] + ".jar");
-							} catch (IOException e) {
-								ret.add("[" + entry.getKey() + "] " + "Download failed.");
-								continue;
+								Thread.sleep(100);
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
 							}
-
-						} else {
-							if (!FileManager.deleteLocalFile(modsPath + entry.getKey() + "-" + entry.getValue()[1] + ".jar")) {
-								ret.add("[" + entry.getKey() + "] " + "Warning: Deletion of file " + entry.getKey() + "-" + entry.getValue()[1] + ".jar failed.\n" + "Either someone touched the mod's file manually or this is a bug.");
-							}
+							new File(modsPath + entry.getKey() + "-" + entry.getValue()[1] + ".jar").getParentFile().mkdirs();
+							NetUtil.downloadFile(url, modsPath + entry.getKey() + "-" + entry.getValue()[1] + ".jar");
+						} catch (IOException e) {
+							ret.add("[" + entry.getKey() + "] " + "Download failed.");
+							continue;
 						}
 
 						mods.put(entry.getKey(), entry.getValue());
@@ -158,6 +155,7 @@ public class FxController {
 					ret.add("[PackInfo]" + "Error writing " + "mods.csv");
 
 				//https://curse.nikky.moe/api/addon/238222/file/2682936
+				//https://curse.nikky.moe/api/addon/365927/file/2897867
 
 				if (new_curse != null) {
 					updateProgress(current, toupdate);
@@ -165,51 +163,50 @@ public class FxController {
 					final String modsPath = local_root + File.separator + "mods" + File.separator;
 
 					for (Map.Entry<String, String[]> entry : new_curse.entrySet()) {
-						String type = entry.getValue()[3];
+						String type = entry.getValue()[4];
 						if ((type.equalsIgnoreCase("client") && server) || (type.equalsIgnoreCase("server") && !server)) {
+							current++;
+							updateProgress(current, toupdate);
 							continue;
 						}
 
 						updateMessage("Updating " + entry.getKey());
 						if (entry.getValue()[0].equalsIgnoreCase("delete")) {
 							if (!FileManager.deleteLocalFile(modsPath + entry.getKey() + "-" + entry.getValue()[2] + ".jar")) {
-								ret.add("[" + entry.getKey() + "] " + "Warning: Deletion of file " + entry.getKey() + "-" + entry.getValue()[1] + ".jar failed.\n" + "Either someone touched the mod's file manually or this is a bug.");
+								ret.add("[" + entry.getKey() + "] " + "Warning: Deletion of file " + entry.getKey() + "-" + entry.getValue()[2] + ".jar failed.\n" + "Either someone touched the mod's file manually or this is a bug.");
 							}
+							mods.put(entry.getKey(), entry.getValue());
+							current++;
+							updateProgress(current, toupdate);
+							System.out.println("Successfully removed " + entry.getKey());
 							continue;
 						}
-						String url;
+						String url = "";
 						try {
-							url = new JSONObject(NetUtil.downloadUrl("https://curse.nikky.moe/api/addon/" + entry.getValue()[1] + "/file/" + entry.getValue()[3])).getString("downloadUrl");
+							url = new JSONObject(NetUtil.downloadUrl("https://dms.zapto.org:801/api/addon/" + entry.getValue()[2] + "/file/" + entry.getValue()[3])).getString("downloadUrl");
 						} catch (JSONException | IOException e1) {
 							ret.add("[" + entry.getKey() + "] " + "Downloading file data failed.");
 							continue;
 						}
-						if (!url.equals("")) {
-							try {
-								try {
-									Thread.sleep(100);
-								} catch (InterruptedException e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-								}
-								new File(modsPath + entry.getKey() + "-" + entry.getValue()[2] + ".jar").getParentFile().mkdirs();
-								NetUtil.downloadFile(url, modsPath + entry.getKey() + "-" + entry.getValue()[2] + ".jar");
-							} catch (IOException e) {
-								ret.add("[" + entry.getKey() + "] " + "Download failed.");
-								continue;
-							}
-							if (!entry.getValue()[1].equals(""))
-								if (!FileManager.deleteLocalFile(modsPath + entry.getKey() + "-" + entry.getValue()[0] + ".jar")) {
-									ret.add("[" + entry.getKey() + "] " + "Warning: Deletion of file " + entry.getKey() + "-" + entry.getValue()[1] + ".jar failed.\n" + "Either someone touched the mod's file manually or this is a bug.");
-								}
-						} else {
+						if (!entry.getValue()[0].equals("")) {
 							if (!FileManager.deleteLocalFile(modsPath + entry.getKey() + "-" + entry.getValue()[0] + ".jar")) {
-								ret.add("[" + entry.getKey() + "] " + "Warning: Deletion of file " + entry.getKey() + "-" + entry.getValue()[1] + ".jar failed.\n" + "Either someone touched the mod's file manually or this is a bug.");
+								ret.add("[" + entry.getKey() + "] " + "Warning: Deletion of file " + entry.getKey() + "-" + entry.getValue()[0] + ".jar failed.\n" + "Either someone touched the mod's file manually or this is a bug.");
 							}
 						}
-
+						try {
+							try {
+								Thread.sleep(100);
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							new File(modsPath + entry.getKey() + "-" + entry.getValue()[1] + ".jar").getParentFile().mkdirs();
+							NetUtil.downloadFile(url, modsPath + entry.getKey() + "-" + entry.getValue()[1] + ".jar");
+						} catch (IOException e) {
+							ret.add("[" + entry.getKey() + "] " + "Download failed.");
+							continue;
+						}
 						curse.put(entry.getKey(), entry.getValue());
-
 						current++;
 						updateProgress(current, toupdate);
 						System.out.println("Successfully updated " + entry.getKey());
