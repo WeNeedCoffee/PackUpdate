@@ -2,6 +2,7 @@ package at.chaosfield.packupdate;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,6 +10,7 @@ import java.util.Map;
 import org.json.JSONException;
 import org.json.JSONObject;
 import coffee.weneed.utils.NetUtil;
+import coffee.weneed.utils.StringUtil;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -184,6 +186,7 @@ public class FxController {
 						String url = "";
 						try {
 							url = new JSONObject(new String(NetUtil.downloadUrl("http://dms.zapto.org:801/api/addon/" + entry.getValue()[2] + "/file/" + entry.getValue()[3]))).getString("downloadUrl");
+							url = StringUtil.getBeginning(url, "/") + URLEncoder.encode(StringUtil.getEnd(url, "/"), "UTF-8").replaceAll("\\+", "%20");
 						} catch (JSONException | IOException e1) {
 							e1.printStackTrace();
 							ret.add("[" + entry.getKey() + "] " + "Downloading file data failed.");
@@ -204,6 +207,7 @@ public class FxController {
 							new File(modsPath + entry.getKey() + "-" + entry.getValue()[1] + ".jar").getParentFile().mkdirs();
 							NetUtil.downloadFile(url, modsPath + entry.getKey() + "-" + entry.getValue()[1] + ".jar");
 						} catch (IOException e) {
+							e.printStackTrace();
 							ret.add("[" + entry.getKey() + "] " + "Download failed.");
 							continue;
 						}

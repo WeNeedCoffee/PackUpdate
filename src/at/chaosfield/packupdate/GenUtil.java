@@ -124,8 +124,8 @@ public class GenUtil {
 	}
 
 	public static void main(String[] args) throws IOException {
-		pruneOldFiles(new File("C:\\Users\\Daleth\\Documents\\GitHub\\Convergence\\config\\"), new File("S:\\Minecraft\\MultiMC\\instances\\Convergence - Roots\\.minecraft\\config\\"), "config", "config", parsePackinfo(getLocalFile("S:\\Minecraft\\MultiMC\\instances\\Convergence - Roots\\.minecraft\\files.csv")));
-		Map<String, String[]> sts = getUpdatedFiles(new File("C:\\Users\\Daleth\\Documents\\GitHub\\Convergence\\config\\"), new File("S:\\Minecraft\\MultiMC\\instances\\Convergence - Roots\\.minecraft\\config\\"), "config", "config", parsePackinfo(getLocalFile("S:\\Minecraft\\MultiMC\\instances\\Convergence - Roots\\.minecraft\\files.csv")));
+		pruneOldFiles(new File("C:\\Users\\Daleth\\Documents\\GitHub\\Convergence\\config\\"), new File("C:\\Users\\Daleth\\Documents\\MultiMC\\instances\\Convergence - Roots\\.minecraft\\config\\"), "config", "config", parsePackinfo(getLocalFile("C:\\Users\\Daleth\\Documents\\MultiMC\\instances\\Convergence - Roots\\.minecraft\\files.csv")));
+		Map<String, String[]> sts = getUpdatedFiles(new File("C:\\Users\\Daleth\\Documents\\GitHub\\Convergence\\config\\"), new File("C:\\Users\\Daleth\\Documents\\MultiMC\\instances\\Convergence - Roots\\.minecraft\\config\\"), "config", "config", parsePackinfo(getLocalFile("C:\\Users\\Daleth\\Documents\\MultiMC\\instances\\Convergence - Roots\\.minecraft\\files.csv")));
 		List<String[]> strs = new ArrayList<>();
 		strs.addAll(sts.values());
 		Collections.sort(strs, (a, b) -> a[0].compareTo(b[0]));
@@ -137,10 +137,21 @@ public class GenUtil {
 			ss = ss.replaceFirst(",", "");
 			System.out.println(ss);
 		}
-		System.out.println("/resourcepacks/Faithful32_MC1.12.2_v1.0.5.zip,1,https://raw.githubusercontent.com/Dalethium/Convergence/master/resourcepacks/Faithful32_MC1.12.2_v1.0.5.zip,client\r\n" + "/resourcepacks/ctp_1.2_MCv3.zip,1,https://raw.githubusercontent.com/Dalethium/Convergence/master/resourcepacks/ctp_1.2_MCv3.zip,client\r\n" + "/resourcepacks/Faithful 1.12.2-rv4.zip,1,https://raw.githubusercontent.com/Dalethium/Convergence/master/resourcepacks/Faithful%201.12.2-rv4.zip,client\r\n" + "/resourcepacks/ModdedFaithful 1.12.2-rv1.zip,1,https://raw.githubusercontent.com/Dalethium/Convergence/master/resourcepacks/ModdedFaithful%201.12.2-rv1.zip,client\r\n" + "/emojicord/dictionary/SFTAS.json,1,https://raw.githubusercontent.com/Dalethium/Convergence/master/emojicord/dictionary/SFTAS.json,client\r\n" + "/options.txt,1,https://raw.githubusercontent.com/Dalethium/Convergence/master/options.txt,client\r\n" + "/optionsof.txt,5,https://raw.githubusercontent.com/Dalethium/Convergence/master/optionsof.txt,client\r\n" + "/optionsshaders.txt,4,https://raw.githubusercontent.com/Dalethium/Convergence/master/optionsshaders.txt,client");
+		System.out.println("\r\n" + 
+				"/resourcepacks/Faithful32_MC1.12.2_v1.0.5.zip,1,https://raw.githubusercontent.com/Dalethium/Convergence/master/resourcepacks/Faithful32_MC1.12.2_v1.0.5.zip,client\r\n" + 
+				"/resourcepacks/ctp_1.2_MCv3.zip,1,https://raw.githubusercontent.com/Dalethium/Convergence/master/resourcepacks/ctp_1.2_MCv3.zip,client\r\n" + 
+				"/resourcepacks/Faithful 1.12.2-rv4.zip,1,https://raw.githubusercontent.com/Dalethium/Convergence/master/resourcepacks/Faithful%201.12.2-rv4.zip,client\r\n" + 
+				"/resourcepacks/ModdedFaithful 1.12.2-rv1.zip,1,https://raw.githubusercontent.com/Dalethium/Convergence/master/resourcepacks/ModdedFaithful%201.12.2-rv1.zip,client\r\n" + 
+				"/emojicord/dictionary/SFTAS.json,1,https://raw.githubusercontent.com/Dalethium/Convergence/master/emojicord/dictionary/SFTAS.json,client\r\n" + 
+				"/options.txt,3,https://raw.githubusercontent.com/Dalethium/Convergence/master/options.txt,client\r\n" + 
+				"/optionsof.txt,7,https://raw.githubusercontent.com/Dalethium/Convergence/master/optionsof.txt,client\r\n" + 
+				"/optionsshaders.txt,6,https://raw.githubusercontent.com/Dalethium/Convergence/master/optionsshaders.txt,client\r\n" + 
+				"/marytts/marytts-runtime-5.2-jar-for-computronics.jar,1,https://raw.githubusercontent.com/Dalethium/Convergence/master/marytts/marytts-runtime-5.2-jar-for-computronics.jar,client\r\n" + 
+				"/marytts/marytts-lang-en-5.2.jar,1,https://raw.githubusercontent.com/Dalethium/Convergence/master/marytts/marytts-lang-en-5.2.jar,client\r\n" + 
+				"/marytts/voice-cmu-slt-hsmm-5.2.jar,1,https://raw.githubusercontent.com/Dalethium/Convergence/master/marytts/voice-cmu-slt-hsmm-5.2.jar,client");
 
 		/*List<String[]> strs = new ArrayList<>();
-		strs.addAll(getFiles(new File("S:\\Minecraft\\Convergence- Roots\\.minecraft\\config\\"), "config", "config"));
+		strs.addAll(getFiles(new File("C:\\Users\\Daleth\\Documents\\Convergence- Roots\\.minecraft\\config\\"), "config", "config"));
 		
 		for (String[] s : strs) {
 			String ss = "";
@@ -174,8 +185,8 @@ public class GenUtil {
 
 	static void a() throws UnsupportedEncodingException {
 
-		String f = "S:\\Minecraft\\mcss\\servers\\Convergence - Roots\\mods\\";
-		String fb = "S:\\Minecraft\\MultiMC\\instances\\Convergence - Roots\\.minecraft\\mods\\";
+		String f = "C:\\Users\\Daleth\\Documents\\mcss\\servers\\Convergence - Roots\\mods\\";
+		String fb = "C:\\Users\\Daleth\\Documents\\MultiMC\\instances\\Convergence - Roots\\.minecraft\\mods\\";
 		File directory = new File(f);
 		File directoryb = new File(fb);
 		List<String> ls = new ArrayList<>();
