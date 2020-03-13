@@ -174,6 +174,7 @@ public class FxController {
 
 						updateMessage("Updating " + entry.getKey());
 						if (entry.getValue()[0].equalsIgnoreCase("delete")) {
+							System.out.println(entry.getValue()[0]);
 							if (!FileManager.deleteLocalFile(modsPath + entry.getKey() + "-" + entry.getValue()[2] + ".jar")) {
 								ret.add("[" + entry.getKey() + "] " + "Warning: Deletion of file " + entry.getKey() + "-" + entry.getValue()[2] + ".jar failed.\n" + "Either someone touched the mod's file manually or this is a bug.");
 							}
@@ -185,9 +186,15 @@ public class FxController {
 						}
 						String url = "";
 						try {
-							url = new JSONObject(new String(NetUtil.downloadUrl("http://dms.zapto.org:801/api/addon/" + entry.getValue()[2] + "/file/" + entry.getValue()[3]))).getString("downloadUrl");
-							url = StringUtil.getBeginning(url, "/") + URLEncoder.encode(StringUtil.getEnd(url, "/"), "UTF-8").replaceAll("\\+", "%20");
-						} catch (JSONException | IOException e1) {
+							;
+							System.out.println(entry.getValue()[0]);
+							String ourl = new JSONObject(new String(NetUtil.downloadUrl("http://dms.zapto.org:801/api/addon/" + entry.getValue()[2] + "/file/" + entry.getValue()[3]))).getString("downloadUrl");
+							String start = StringUtil.substr(ourl, 0, ourl.length() - StringUtil.getEnd(ourl, "/").length() - 1 + "/".length());
+							String end = StringUtil.getEnd(ourl, "/");
+							end = URLEncoder.encode(end, "UTF-8");
+							end = end.replaceAll("\\+", "%20");
+							url = start + end;
+						} catch (Exception e1) {
 							e1.printStackTrace();
 							ret.add("[" + entry.getKey() + "] " + "Downloading file data failed.");
 							continue;
@@ -206,7 +213,7 @@ public class FxController {
 							}
 							new File(modsPath + entry.getKey() + "-" + entry.getValue()[1] + ".jar").getParentFile().mkdirs();
 							NetUtil.downloadFile(url, modsPath + entry.getKey() + "-" + entry.getValue()[1] + ".jar");
-						} catch (IOException e) {
+						} catch (Exception e) {
 							e.printStackTrace();
 							ret.add("[" + entry.getKey() + "] " + "Download failed.");
 							continue;
