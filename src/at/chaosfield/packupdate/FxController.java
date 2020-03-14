@@ -1,8 +1,13 @@
 package at.chaosfield.packupdate;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.channels.Channels;
+import java.nio.channels.FileChannel;
+import java.nio.channels.ReadableByteChannel;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -139,7 +144,7 @@ public class FxController {
 								e.printStackTrace();
 							}
 							new File(modsPath + entry.getKey() + "-" + entry.getValue()[1] + ".jar").getParentFile().mkdirs();
-							NetUtil.downloadFile(url, modsPath + entry.getKey() + "-" + entry.getValue()[1] + ".jar");
+							NetUtil.downloadFileAlt(url, new File(modsPath + entry.getKey() + "-" + entry.getValue()[1] + ".jar"));
 						} catch (IOException e) {
 							ret.add("[" + entry.getKey() + "] " + "Download failed.");
 							continue;
@@ -212,7 +217,7 @@ public class FxController {
 								e.printStackTrace();
 							}
 							new File(modsPath + entry.getKey() + "-" + entry.getValue()[1] + ".jar").getParentFile().mkdirs();
-							NetUtil.downloadFile(url, modsPath + entry.getKey() + "-" + entry.getValue()[1] + ".jar");
+							NetUtil.downloadFileAlt(url, new File(modsPath + entry.getKey() + "-" + entry.getValue()[1] + ".jar"));
 						} catch (Exception e) {
 							e.printStackTrace();
 							ret.add("[" + entry.getKey() + "] " + "Download failed.");
@@ -387,5 +392,14 @@ public class FxController {
 									break;
 	
 								default:*/
+	public static void downloadFileAlt(String fileUrl, File destination) throws IOException {
+		ReadableByteChannel readableByteChannel = Channels.newChannel(new URL(fileUrl).openStream());
+		FileOutputStream fileOutputStream = new FileOutputStream(destination);
+		FileChannel fileChannel = fileOutputStream.getChannel();
+		fileChannel.transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
+		fileOutputStream.close();
+
+	}
+	
 
 }
