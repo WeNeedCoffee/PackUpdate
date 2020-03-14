@@ -145,11 +145,7 @@ public class FxController {
 								e.printStackTrace();
 							}
 							new File(modsPath + entry.getKey() + "-" + entry.getValue()[1] + ".jar").getParentFile().mkdirs();
-							FileUtils.copyURLToFile(
-									  new URL(url), 
-									  new File(modsPath + entry.getKey() + "-" + entry.getValue()[1] + ".jar"), 
-									  10000, 
-									  60000);
+							NetUtil.downloadFile(url, new File(modsPath + entry.getKey() + "-" + entry.getValue()[1] + ".jar"));
 						} catch (IOException e) {
 							ret.add("[" + entry.getKey() + "] " + "Download failed.");
 							continue;
