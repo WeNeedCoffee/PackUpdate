@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.io.FileUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import coffee.weneed.utils.NetUtil;
@@ -144,7 +145,11 @@ public class FxController {
 								e.printStackTrace();
 							}
 							new File(modsPath + entry.getKey() + "-" + entry.getValue()[1] + ".jar").getParentFile().mkdirs();
-							NetUtil.downloadFileAlt(url, new File(modsPath + entry.getKey() + "-" + entry.getValue()[1] + ".jar"));
+							FileUtils.copyURLToFile(
+									  new URL(url), 
+									  new File(modsPath + entry.getKey() + "-" + entry.getValue()[1] + ".jar"), 
+									  10000, 
+									  60000);
 						} catch (IOException e) {
 							ret.add("[" + entry.getKey() + "] " + "Download failed.");
 							continue;
@@ -217,7 +222,12 @@ public class FxController {
 								e.printStackTrace();
 							}
 							new File(modsPath + entry.getKey() + "-" + entry.getValue()[1] + ".jar").getParentFile().mkdirs();
-							NetUtil.downloadFileAlt(url, new File(modsPath + entry.getKey() + "-" + entry.getValue()[1] + ".jar"));
+
+							FileUtils.copyURLToFile(
+									  new URL(url), 
+									  new File(modsPath + entry.getKey() + "-" + entry.getValue()[1] + ".jar"), 
+									  10000, 
+									  60000);
 						} catch (Exception e) {
 							e.printStackTrace();
 							ret.add("[" + entry.getKey() + "] " + "Download failed.");
@@ -268,7 +278,11 @@ public class FxController {
 									e.printStackTrace();
 								}
 								new File(local_root + entry.getKey()).getParentFile().mkdirs();
-								NetUtil.downloadFile(url, local_root + entry.getKey());
+								FileUtils.copyURLToFile(
+										  new URL(url), 
+										  new File(local_root + entry.getKey()), 
+										  10000, 
+										  60000);
 							} catch (IOException e) {
 								e.printStackTrace();
 								ret.add("[" + entry.getKey() + "] " + "Download failed.");
