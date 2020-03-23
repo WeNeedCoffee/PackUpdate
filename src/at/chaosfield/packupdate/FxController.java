@@ -184,7 +184,7 @@ public class FxController {
 							if (!FileManager.deleteLocalFile(modsPath + entry.getKey() + "-" + entry.getValue()[2] + ".jar")) {
 								ret.add("[" + entry.getKey() + "] " + "Warning: Deletion of file " + entry.getKey() + "-" + entry.getValue()[2] + ".jar failed.\n" + "Either someone touched the mod's file manually or this is a bug.");
 							}
-							mods.put(entry.getKey(), entry.getValue());
+							curse.put(entry.getKey(), entry.getValue());
 							current++;
 							updateProgress(current, toupdate);
 							System.out.println("Successfully removed " + entry.getKey());
@@ -192,7 +192,6 @@ public class FxController {
 						}
 						String url = "";
 						try {
-							;
 							System.out.println(entry.getValue()[0]);
 							String ourl = new JSONObject(new String(NetUtil.downloadUrl("http://dms.zapto.org:801/api/addon/" + entry.getValue()[2] + "/file/" + entry.getValue()[3]))).getString("downloadUrl");
 							String start = StringUtil.substr(ourl, 0, ourl.length() - StringUtil.getEnd(ourl, "/").length() - 1 + "/".length());

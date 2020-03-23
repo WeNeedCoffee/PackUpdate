@@ -177,8 +177,9 @@ public class FileManager {
 			PrintWriter writer = new PrintWriter(fileName, "UTF-8");
 			for (Map.Entry<String, String[]> entry : packInfo.entrySet()) {
 
-				if (entry.getValue()[0].equals(""))
+				if (entry.getValue()[0].equals("")) {
 					continue;
+				}
 				String s = entry.getKey();
 				for (String e : entry.getValue()) {
 					s += "," + e;
