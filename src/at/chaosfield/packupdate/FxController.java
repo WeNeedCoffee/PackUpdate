@@ -139,13 +139,18 @@ public class FxController {
 						}
 						try {
 							try {
-								Thread.sleep(100);
+								Thread.sleep(1000);
 							} catch (InterruptedException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
 							new File(modsPath + entry.getKey() + "-" + entry.getValue()[1] + ".jar").getParentFile().mkdirs();
-							NetUtil.downloadFile(url, new File(modsPath + entry.getKey() + "-" + entry.getValue()[1] + ".jar"));
+							FileUtils.copyURLToFile(
+									  new URL(url), 
+									  new File(modsPath + entry.getKey() + "-" + entry.getValue()[1] + ".jar"), 
+									  10000, 
+									  60000);
+							
 						} catch (IOException e) {
 							ret.add("[" + entry.getKey() + "] " + "Download failed.");
 							continue;
